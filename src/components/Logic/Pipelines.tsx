@@ -6,16 +6,16 @@ import { Container, Typography, Card, CardContent, CardActions, Button, Grid, Bo
 // MSAL Configuration
 const msalConfig = {
     auth: {
-        clientId: "99fbd4f5-fc2f-40c1-95fa-f8bcae8e8d94",
-        authority: "https://login.microsoftonline.com/a3b7e820-e897-498d-a4bf-c723c6f52ab6",
-        redirectUri: "http://localhost:3000"
-    }
+        clientId: 'daead9f9-0e85-4b45-8d50-7fecca5164a6',
+        authority: 'https://login.microsoftonline.com/organizations',
+        redirectUri: 'http://localhost:3000/',
+      }
 };
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
 const storageRequest = {
-    scopes: ["api://99fbd4f5-fc2f-40c1-95fa-f8bcae8e8d94/acces_as_user"]
+    scopes: ["api://daead9f9-0e85-4b45-8d50-7fecca5164a6/access_as_user"]
 };
 
 async function getAccessToken(account: AccountInfo) {
@@ -24,8 +24,10 @@ async function getAccessToken(account: AccountInfo) {
             ...storageRequest,
             account: account
         });
+        console.log(response.accessToken)
         return response.accessToken;
     } catch (error) {
+        console.log("No access. Tried interaction to get token.")
         if (error instanceof InteractionRequiredAuthError) {
             msalInstance.acquireTokenRedirect({
                 ...storageRequest,
@@ -66,9 +68,9 @@ const PipelinesComponent: React.FC = () => {
                         return;
                     }
 
-                    const response = await axios.get("http://localhost:7071/api/GetPipelines", {
+                    const response = await axios.get("https://flexconsumption-python-functions.azurewebsites.net/api/availableUseCases", {
                         headers: {
-                            Authorization: `Bearer ${accessToken}`
+                            Authorization: `Bearer ${accessToken}`,
                         }
                     });
 
